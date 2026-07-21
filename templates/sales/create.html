@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card shadow">
+    <div class="card-header bg-primary text-white">Nueva Venta</div>
+    <div class="card-body">
+        <form method="POST" id="sales-form">
+            <div class="mb-3 col-md-6">
+                <label class="form-label">Cliente</label>
+                <select name="cliente_id" class="form-select" required>
+                    {% for c in clientes %}
+                    <option value="{{ c.id }}">{{ c.nombre }} ({{ c.email }})</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <hr>
+            <h5>Productos</h5>
+            <table class="table" id="products-table">
+                <thead>
+                    <tr>
+                        <th>Producto</th>
+                        <th style="width: 150px;">Cantidad</th>
+                        <th>Precio</th>
+                        <th>Acción</th>
+                    </tr>
+                </thead>
+                <tbody id="product-rows">
+                    <!-- Las filas se agregan aquí con JS -->
+                </tbody>
+            </table>
+            <button type="button" class="btn btn-secondary btn-sm" onclick="addRow()">+ Agregar Producto</button>
+            
+            <div class="text-end mt-4">
+                <button type="submit" class="btn btn-success btn-lg">Confirmar Venta</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<template id="product-row-template">
+    <tr>
+        <td>
+            <select name="producto_id[]" class="form-select prod-select" required onchange="updatePrice(this)">
+                <option value="">Seleccione...</option>
+                {% for p in productos %}
+                <option value="{{ p.id }}" data-price="{{ p.precio }}" data-stock="{{ p.stock }}">
+                    {{ p.nombre }} (Stock: {{ p.stock }})
+                </option>
+                {% endfor %}
+            </select>
+        </td>
+        <td><input type="number" name="cantidad[]" class="form-control" min="1" value="1" required></td>
+        <td class="price-val">$0.00</td>
+        <td><button type="button" class="btn btn-danger btn-sm" onclick="this.closest('tr').remove()">X</button></td>
+    </tr>
+</template>
+
+<script>
+function addRow() {
+    const template = document.getElementById('product-row-template');
+    const tbody = document.getElementById('product-rows');
+    const clone = template.content.cloneNode(true);
+    tbody.appendChild(clone);
+}
+
+function updatePrice(select) {
+    const option = select.options[select.selectedIndex];
+    const price = option.getAttribute('data-price');
+    const row = select.closest('tr');
+    row.querySelector('.price-val').innerText = '$' + price;
+}
+
+// Agregar primera fila al cargar
+window.onload = addRow;
+</script>
+{% endblock %}

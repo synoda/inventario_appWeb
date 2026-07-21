@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card shadow mx-auto" style="max-width: 600px;">
+    <div class="card-header bg-dark text-white">
+        <h5>{{ 'Editar' if edit else 'Nuevo' }} Producto</h5>
+    </div>
+    <div class="card-body">
+        <form method="POST">
+            {{ form.hidden_tag() }}
+            <div class="mb-3">
+                <label class="form-label">Código</label>
+                {{ form.codigo(class="form-control") }}
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Nombre</label>
+                {{ form.nombre(class="form-control") }}
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Precio</label>
+                    {{ form.precio(class="form-control") }}
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Stock Actual</label>
+                    {{ form.stock(class="form-control") }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Categoría</label>
+                    {{ form.categoria_id(class="form-select") }}
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Proveedor</label>
+                    {{ form.proveedor_id(class="form-select") }}
+                </div>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Stock Mínimo Alerta</label>
+                {{ form.stock_minimo(class="form-control") }}
+            </div>
+            <div class="d-grid gap-2">
+                {{ form.submit(class="btn btn-success") }}
+                <a href="{{ url_for('productos') }}" class="btn btn-secondary">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

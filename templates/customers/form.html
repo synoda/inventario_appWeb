@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card shadow mx-auto" style="max-width: 500px;">
+    <div class="card-header bg-primary text-white">
+        <h5>Registrar Nuevo Cliente</h5>
+    </div>
+    <div class="card-body">
+        <form method="POST">
+            {{ form.hidden_tag() }}
+            <div class="mb-3">
+                <label class="form-label">Nombre Completo</label>
+                {{ form.nombre(class="form-control") }}
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Correo Electrónico</label>
+                {{ form.email(class="form-control") }}
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Teléfono</label>
+                {{ form.telefono(class="form-control") }}
+            </div>
+            <div class="d-grid gap-2">
+                {{ form.submit(class="btn btn-success") }}
+                <a href="{{ url_for('clientes') }}" class="btn btn-secondary">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

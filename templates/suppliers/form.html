@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card shadow mx-auto" style="max-width: 500px;">
+    <div class="card-header bg-dark text-white">
+        <h5>{{ 'Editar' if edit else 'Nuevo' }} Proveedor</h5>
+    </div>
+    <div class="card-body">
+        <form method="POST">
+            {{ form.hidden_tag() }}
+            <div class="mb-3">
+                <label class="form-label">Nombre del Proveedor</label>
+                {{ form.nombre(class="form-control", placeholder="Ej: Distribuidora Central") }}
+                {% for error in form.nombre.errors %}
+                    <span class="text-danger small">{{ error }}</span>
+                {% endfor %}
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Teléfono</label>
+                {{ form.telefono(class="form-control", placeholder="Ej: 555-0199") }}
+                {% for error in form.telefono.errors %}
+                    <span class="text-danger small">{{ error }}</span>
+                {% endfor %}
+            </div>
+            <div class="d-grid gap-2">
+                {{ form.submit(class="btn btn-success") }}
+                <a href="{{ url_for('proveedores') }}" class="btn btn-secondary">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
