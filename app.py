@@ -314,6 +314,37 @@ def eliminar_proveedor(id):
     return redirect(url_for('proveedores'))
 
 
+# --- Utilidad de emergencia: crear/resetear el usuario admin ---
+# Visita esta URL una sola vez para garantizar que el usuario admin exista:
+#   https://TU-APP.up.railway.app/setup-admin?token=EL_VALOR_QUE_PUSISTE_EN_SETUP_TOKEN
+# Requiere la variable de entorno SETUP_TOKEN configurada en Railway.
+# Opcionalmente puedes definir ADMIN_USERNAME y ADMIN_PASSWORD para elegir
+# el usuario/clave; si no los defines, usa admin / admin123.
+@app.route('/setup-admin')
+def setup_admin():
+    setup_token = os.environ.get('SETUP_TOKEN')
+    token_recibido = request.args.get('token')
+
+    if not setup_token or token_recibido != setup_token:
+        abort(404)
+
+    username = os.environ.get('ADMIN_USERNAME', 'admin')
+    password = os.environ.get('ADMIN_PASSWORD', 'admin123')
+
+    usuario = Usuario.query.filter_by(username=username).first()
+    if usuario:
+        usuario.set_password(password)
+        usuario.rol = 'admin'
+        db.session.commit()
+        return f'Usuario "{username}" ya existía: se actualizó su contraseña y rol a admin.'
+    else:
+        usuario = Usuario(username=username, rol='admin')
+        usuario.set_password(password)
+        db.session.add(usuario)
+        db.session.commit()
+        return f'Usuario "{username}" creado con rol admin.'
+
+
 if __name__ == '__main__':
     # Este bloque solo se ejecuta cuando corres "python app.py" en local.
     # En Railway, gunicorn (ver Procfile) importa la app directamente y
