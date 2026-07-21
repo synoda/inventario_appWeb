@@ -1,70 +1,28 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="row text-center mb-4">
-    <div class="col-md-4">
-        <div class="card bg-primary text-white shadow">
-            <div class="card-body">
-                <h3>{{ total_prod }}</h3>
-                <p>Productos</p>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-4">
-        <div class="card bg-success text-white shadow">
-            <div class="card-body">
-                <h3>{{ total_cli }}</h3>
-                <p>Clientes</p>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-4">
-        <div class="card bg-info text-white shadow">
-            <div class="card-body">
-                <h3>{{ total_prov }}</h3>
-                <p>Proveedores</p>
-            </div>
-        </div>
-    </div>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Proveedores</h2>
+    <a href="/proveedores/nuevo" class="btn btn-primary">Nuevo Proveedor</a>
 </div>
 
-<div class="row">
-    <div class="col-md-6">
-        <div class="card shadow">
-            <div class="card-header bg-danger text-white">Alertas de Stock Bajo</div>
-            <div class="card-body p-0">
-                <table class="table table-hover mb-0">
-                    <thead><tr><th>Producto</th><th>Stock</th><th>Min</th></tr></thead>
-                    <tbody>
-                        {% for p in stock_bajo %}
-                        <tr>
-                            <td>{{ p.nombre }}</td>
-                            <td class="text-danger fw-bold">{{ p.stock }}</td>
-                            <td>{{ p.stock_minimo }}</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-6">
-        <div class="card shadow">
-            <div class="card-header bg-dark text-white">Últimas Ventas</div>
-            <div class="card-body p-0">
-                <table class="table table-hover mb-0">
-                    <thead><tr><th>Fecha</th><th>Cliente</th><th>Total</th></tr></thead>
-                    <tbody>
-                        {% for v in ultimas_ventas %}
-                        <tr>
-                            <td>{{ v.fecha.strftime('%d/%m/%Y') }}</td>
-                            <td>{{ v.cliente.nombre }}</td>
-                            <td>${{ v.total }}</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        </div>
+<div class="card shadow">
+    <div class="card-body p-0">
+        <table class="table table-hover mb-0">
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Teléfono</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for p in proveedores %}
+                <tr>
+                    <td>{{ p.nombre }}</td>
+                    <td>{{ p.telefono }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
 </div>
 {% endblock %}

@@ -12,9 +12,25 @@ from functools import wraps
 from flask import abort
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'mi_llave_secreta_muy_segura'
+
+# SECRET_KEY: en Railway se define como variable de entorno.
+# Si no existe (ej. desarrollo local), se usa un valor por defecto.
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'mi_llave_secreta_muy_segura')
+
 basedir = os.path.abspath(os.path.dirname(__file__))
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'inventario.db')
+
+# Base de datos: si Railway provee DATABASE_URL (ej. al agregar un plugin de
+# PostgreSQL) se usa esa; si no, se usa SQLite local como hasta ahora.
+database_url = os.environ.get(
+    'DATABASE_URL',
+    'sqlite:///' + os.path.join(basedir, 'inventario.db')
+)
+# Railway (y Heroku) entregan la URL como "postgres://", pero SQLAlchemy 1.4+
+# exige el prefijo "postgresql://". Se corrige automáticamente si aplica.
+if database_url.startswith('postgres://'):
+    database_url = database_url.replace('postgres://', 'postgresql://', 1)
+
+app.config['SQLALCHEMY_DATABASE_URI'] = database_url
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db.init_app(app)
@@ -299,4 +315,9 @@ def eliminar_proveedor(id):
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    # Este bloque solo se ejecuta cuando corres "python app.py" en local.
+    # En Railway, gunicorn (ver Procfile) importa la app directamente y
+    # este bloque nunca se ejecuta.
+    port = int(os.environ.get('PORT', 5000))
+    debug_mode = os.environ.get('FLASK_DEBUG', '1') == '1'
+    app.run(host='0.0.0.0', port=port, debug=debug_mode)
